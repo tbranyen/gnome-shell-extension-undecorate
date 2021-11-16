@@ -13,7 +13,9 @@
     "40",
     "41"
   ],
+  "settings-schema": "org.gnome.shell.extensions.undecorate",
+  "gettext-domain": "gnome-shell-extension-undecorate",
   "url": "https://github.com/tbranyen/gnome-shell-extension-undecorate",
-  "uuid": "undecorate@tabdeveloper.com", 
+  "uuid": "undecorate@tabdeveloper.com",
   "version": 2.0
 }
