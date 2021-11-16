@@ -1,0 +1,21 @@
+{
+  "_generated": "tim branyen",
+  "description": "Adds undecorate option to window menu to toggle window decoration.",
+  "name": "Undecorate Window for Wayland",
+  "original-authors": [
+    "sun.wxg@gmail.com",
+    "tim@tabdeveloper.com"
+  ],
+  "shell-version": [
+    "3.20",
+    "3.22",
+    "3.24",
+    "40",
+    "41"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.undecorate",
+  "gettext-domain": "gnome-shell-extension-undecorate",
+  "url": "https://github.com/tbranyen/gnome-shell-extension-undecorate",
+  "uuid": "undecorate@tabdeveloper.com",
+  "version": 2.0
+}
