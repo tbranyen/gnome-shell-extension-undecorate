@@ -11,11 +11,12 @@
     "3.22",
     "3.24",
     "40",
-    "41"
+    "41",
+    "42"
   ],
   "settings-schema": "org.gnome.shell.extensions.undecorate",
   "gettext-domain": "gnome-shell-extension-undecorate",
   "url": "https://github.com/tbranyen/gnome-shell-extension-undecorate",
   "uuid": "undecorate@tabdeveloper.com",
-  "version": 2.0
+  "version": 3.0
 }
