@@ -45,7 +45,7 @@ function enable() {
 
 // Return to the original class method.
 function disable() {
-    WindowMenu.prototype._buildMenu = buildMenu.old;
+    WindowMenu.prototype._buildMenu = old_buildMenu;
 
     global.display.disconnect(windowCreatedId);
 }
