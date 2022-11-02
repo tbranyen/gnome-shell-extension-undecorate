@@ -12,7 +12,8 @@
     "3.24",
     "40",
     "41",
-    "42"
+    "42",
+    "43"
   ],
   "settings-schema": "org.gnome.shell.extensions.undecorate",
   "gettext-domain": "gnome-shell-extension-undecorate",
