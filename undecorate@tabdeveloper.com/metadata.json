@@ -13,11 +13,12 @@
     "40",
     "41",
     "42",
-    "43"
+    "43",
+    "44"
   ],
   "settings-schema": "org.gnome.shell.extensions.undecorate",
   "gettext-domain": "gnome-shell-extension-undecorate",
   "url": "https://github.com/tbranyen/gnome-shell-extension-undecorate",
   "uuid": "undecorate@tabdeveloper.com",
-  "version": 3.0
+  "version": 4.0
 }

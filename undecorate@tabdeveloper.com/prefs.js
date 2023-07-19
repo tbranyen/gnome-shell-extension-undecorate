@@ -136,7 +136,7 @@ const AppsPane = GObject.registerClass(
 
             const context = this._list.get_style_context();
             const cssProvider = new Gtk.CssProvider();
-            cssProvider.load_from_data(
+            cssProvider.load_from_string(
                 'list { min-width: 30em; }');
 
             context.add_provider(cssProvider,
