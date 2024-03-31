@@ -1,54 +1,59 @@
 // Forked from sunwxg/gnome-shell-extension-undecorate
 // Apps preferences handling borrowed from https://github.com/eonpatapon/gnome-shell-extension-
-const Lang = imports.lang;
-const { Shell, GLib, Meta } = imports.gi;
-const PopupMenu = imports.ui.popupMenu;
-const WindowMenu = imports.ui.windowMenu.WindowMenu;
-const ExtensionUtils = imports.misc.extensionUtils;
+import GLib from 'gi://GLib';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as WindowMenu from 'resource:///org/gnome/shell/ui/windowMenu.js';
+import { Extension, InjectionManager, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-let old_buildMenu;
+
 let windowCreatedId;
 
-function init() {
-    // Cache the incoming `_buildMenu` class, to hook into.
-    old_buildMenu = WindowMenu.prototype._buildMenu;
+export default class UndecorateExtension extends Extension {
+    enable() {
+        // Overwrite the buildMenu method to hook our menu item into.
+        this._injectionManager = new InjectionManager();
+        this._injectionManager.overrideMethod(WindowMenu.WindowMenu.prototype, '_buildMenu',
+        old_buildMenu => {
+                return function (...args) {
+                    old_buildMenu.call(this, ...args);
+                    newBuildMenu.call(this, ...args)
+                }
+            })
+
+        const settings = this.getSettings();
+        windowCreatedId = global.display.connect('window-created', (_, window) => {
+            // Automatically set this window up      
+            // Set defaults
+            let done = false;
+            const appSystem = Shell.AppSystem.get_default();
+      
+            settings.get_strv('inhibit-apps').forEach(appId => {
+              //const window = global.display.focus_window;
+              if (done) {
+                return;
+              }
+      
+              const app = appSystem.lookup_app(appId);
+      
+              if (app.get_windows().includes(window)) {
+                undecorate(window);
+                windowGetFocus(window);
+                done = true;
+              }
+            });
+          });
+    }
+
+    disable() {
+        this._injectionManager.clear();
+        this._injectionManager = null;
+        global.display.disconnect(windowCreatedId);
+    }
 }
 
-// Overwrite the buildMenu method to hook our menu item into.
-function enable() {
-    WindowMenu.prototype._buildMenu = newBuildMenu;
 
-    windowCreatedId = global.display.connect('window-created', (_, window) => {
-      // Automatically set this window up
-      const settings = ExtensionUtils.getSettings();
-
-      // Set defaults
-      let done = false;
-      const appSystem = Shell.AppSystem.get_default();
-
-      settings.get_strv('inhibit-apps').forEach(appId => {
-        //const window = global.display.focus_window;
-        if (done) {
-          return;
-        }
-
-        const app = appSystem.lookup_app(appId);
-
-        if (app.get_windows().includes(window)) {
-          undecorate(window);
-          windowGetFocus(window);
-          done = true;
-        }
-      });
-    });
-}
-
-// Return to the original class method.
-function disable() {
-    WindowMenu.prototype._buildMenu = old_buildMenu;
-
-    global.display.disconnect(windowCreatedId);
-}
 
 function undecorate(window) {
     try {
@@ -92,22 +97,19 @@ function windowGetFocus(window) {
 // Cannot use an arrow function here, as the function will be treated as a
 // class method when invoked and we rely on `this`.
 function newBuildMenu(window) {
-      let old = Lang.bind(this, old_buildMenu);
-      old(window);
-
       this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
       let item = {};
       if (window.decorated) {
-          item = this.addAction(_('Undecorate'), Lang.bind(this, event => {
+          item = this.addAction(_('Undecorate'), event => {
               undecorate(window);
               windowGetFocus(window);
-          }));
+          });
       } else {
-          item = this.addAction(_('Decorate'), Lang.bind(this, event => {
+          item = this.addAction(_('Decorate'), event => {
               decorate(window);
               windowGetFocus(window);
-          }));
+          });
       }
       if (window.get_window_type() == Meta.WindowType.DESKTOP) {
           item.setSensitive(false);
