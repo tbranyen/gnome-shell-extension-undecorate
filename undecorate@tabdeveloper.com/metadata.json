@@ -7,14 +7,8 @@
     "tim@tabdeveloper.com"
   ],
   "shell-version": [
-    "3.20",
-    "3.22",
-    "3.24",
-    "40",
-    "41",
-    "42",
-    "43",
-    "44"
+    "45",
+    "46"
   ],
   "settings-schema": "org.gnome.shell.extensions.undecorate",
   "gettext-domain": "gnome-shell-extension-undecorate",
