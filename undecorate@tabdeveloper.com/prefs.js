@@ -2,13 +2,15 @@
 
 // loosely based on https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/blob/master/extensions/auto-move-windows/prefs.js
 
-const { Gio, GLib, GObject, Gtk, Pango } = imports.gi;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import Pango from 'gi://Pango';
 
-const Gettext = imports.gettext.domain('gnome-shell-extension-undecorated');
-const _ = Gettext.gettext;
+import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-
+var _settings;
 const SettingsKey = {
     INHIBIT_APPS: 'inhibit-apps',
 };
@@ -41,7 +43,7 @@ const SettingListBoxRow = GObject.registerClass({
 class SettingListBoxRow extends Gtk.ListBoxRow {
     _init(label, description, settingsKey, type, options) {
         this.rowType = type;
-        this._settings = ExtensionUtils.getSettings();
+        this._settings = _settings;
 
         const _hbox = new Gtk.Box({
             spacing: 12,
@@ -109,6 +111,7 @@ const AppsPane = GObject.registerClass(
             super._init({
                 hscrollbar_policy: Gtk.PolicyType.NEVER,
             });
+            this.set_min_content_height(450);
 
             const box = new Gtk.Box({
                 orientation: Gtk.Orientation.VERTICAL,
@@ -137,7 +140,7 @@ const AppsPane = GObject.registerClass(
             const context = this._list.get_style_context();
             const cssProvider = new Gtk.CssProvider();
             cssProvider.load_from_string(
-                'list { min-width: 30em; }');
+                'list { min-width: 25em; }');
 
             context.add_provider(cssProvider,
                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
@@ -168,7 +171,7 @@ const AppsPane = GObject.registerClass(
             this._actionGroup.add_action(action);
             this._updateAction = action;
 
-            this._settings = ExtensionUtils.getSettings();
+            this._settings = _settings;
             this._changedId = this._settings.connect('changed',
                 this._sync.bind(this));
             this._sync();
@@ -306,7 +309,7 @@ const NewAppDialog = GObject.registerClass(
                 modal: true,
             });
 
-            this._settings = ExtensionUtils.getSettings();
+            this._settings = _settings;
 
             this.get_widget().set({
                 show_all: true,
@@ -337,10 +340,9 @@ const UndecoratedSettingsWidget = GObject.registerClass(
     }
 );
 
-function init() {
-    ExtensionUtils.initTranslations();
-}
-
-function buildPrefsWidget() {
-    return new UndecoratedSettingsWidget();
+export default class UndecoratePrefs extends ExtensionPreferences {
+    getPreferencesWidget() {
+        _settings = this.getSettings();
+        return new UndecoratedSettingsWidget();
+    }
 }
